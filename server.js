@@ -1,0 +1,121 @@
+// Server Dependencies
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+// var mongoose = require("mongoose");
+// var jwt = require('express-jwt');
+// var cors = require('cors');
+
+// MongoDB Schemas
+// var Article = require('./models/Article.js');
+// var User = require('./models/User.js');
+
+// Create Instance of Express
+var app = express();
+// Sets an initial port. We'll use this later in our listener
+var PORT = process.env.PORT || 3000;
+
+// Run Morgan for Logging
+app.use(logger("dev"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({type: "application/vnd.api+json"}));
+
+app.use(express.static("./public"));
+
+// -------------------------------------------------
+
+// // reroute http requests over https--mainly for heroku
+// app.use forceSsl(req, res, next) - > if req.header 'x-forwarded-proto' != 'https'
+// res.redirect "https://#{req.header 'host'}#{req.url}"
+// else
+//     next()
+
+    // MongoDB Configuration
+// mongoose.connect("mongodb://heroku_fdj2wmk7:r2npdn9l0c7t24ecprkknkoba9@ds133338.mlab.com:33338/heroku_fdj2wmk7");
+// var db = mongoose.connection;
+//
+// db.on("error", function(err) {
+//     console.log("Mongoose Error: ", err);
+// });
+//
+// db.once("open", function() {
+//     console.log("Mongoose connection successful.");
+// });
+//
+// mongoose.Promise = Promise;
+
+//===========================================================
+// Auth
+//===========================================================
+// var config = require('./app/config/config.js');
+// app.use(cors());
+//
+// // Authentication middleware provided by express-jwt.
+// // This middleware will check incoming requests for a valid
+// // JWT on any routes that it is applied to.
+// var authCheck = jwt({
+//     secret: new Buffer(config.auth0Secret, 'base64'),
+//     audience: config.auth0ClientId
+// });
+
+//===========================================================
+// Router
+//===========================================================
+
+// Home page - the user is sent the ReactJS page
+app.get("/", function(req, res) {
+    res.sendFile(__dirname + "/public/index.html");
+});
+//
+// // Articles
+// app.get("/api/users/:userId/saved", authCheck, function(req, res) {
+//     Article.find({'user': req.params.userId}).sort([
+//         ["createdAt", "descending"]
+//     ]).exec(function(err, doc) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             res.send(doc);
+//         }
+//     });
+// });
+//
+// // This route saves articles when the user clicks the 'save' button
+// app.post("/api/users/:userId/saved", authCheck, function(req, res) {
+//
+//     console.log('Req body: ' + JSON.stringify(req.body));
+//     Article.create({
+//         title: req.body.headline.main,
+//         date: req.body.pub_date,
+//         url: req.body.web_url,
+//         user: req.params.userId
+//     }, function(err) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             res.send("Article Saved");
+//         }
+//     });
+// });
+//
+// // This route deletes articles when the user clicks the 'delete' button
+// app.delete("/api/users/:userId/saved/:articleID", authCheck, function(req, res) {
+//     // console.log(JSON.stringify(req.body));
+//     Article.findByIdAndRemove(mongoose.Types.ObjectId(req.params.articleID), function(err, article) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//
+//         }
+//
+//     });
+// });
+
+// -------------------------------------------------
+
+// Listener
+app.listen(PORT, function() {
+    console.log("App listening on PORT: " + PORT);
+});
