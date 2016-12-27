@@ -1,10 +1,10 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
-import rpgApp from './reducers'
-import App from './components/App'
+import rpgApp from './reducers/rpgApp';
+import App from './components/App';
 
 let store = createStore(rpgApp)
 
