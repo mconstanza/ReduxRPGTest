@@ -1,28 +1,54 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-function player(state = [], action) {
-  switch (action.type) {
-    case ADD_HP:
-      return [
-        ...state,
-        {
-          player.HP: state.player.HP + action.HP
-        }
-      ]
-    case REDUCE_HP:
-    return [
-      ...state,
-      {
-        player.HP: state.player.HP - action.HP
-      }
-    ]
-    default:
-      return state
-  }
+const player = (state = {
+    player: {
+        id: 1,
+        HP: 100,
+        maxHP: 100
+    }
+}, action) => {
+    switch (action.type) {
+        case 'ADD_PLAYER_HP':
+            return {
+                ...state,
+                HP : state.HP + action.HP
+            }
+
+        case 'REDUCE_PLAYER_HP':
+            return {
+                ...state,
+                HP: state.HP - action.HP
+            }
+
+        default:
+            return state
+    }
 }
 
-const rpgApp = combineReducers({
+const enemy = (state = {
+    enemy: {
+        id: 1,
+        HP: 100,
+        maxHP: 100
+    }
+}, action) => {
+    switch (action.type) {
+        case 'ADD_ENEMY_HP':
+            return
+            {
+                HP : state.HP + action.HP
+            }
 
-})
+        case 'REDUCE_ENEMY_HP':
+            return
+            {
+                HP : state.HP - action.HP
+            }
+        default:
+            return state
+    }
+}
+
+const rpgApp = combineReducers({player: player, enemy: enemy})
 
 export default rpgApp;

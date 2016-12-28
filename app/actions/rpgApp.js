@@ -1,16 +1,9 @@
-
-
-
-export const ADD_HP = 'ADD_HP';
-export const REDUCE_HP = 'REDUCE_HP';
-
-
 // Action Creators
 
-export function addHP(character) {
-  return { type: ADD_HP, character}
+export function addPlayerHP(player, HP) {
+  return { type: 'ADD_PLAYER_HP', player, HP: HP}
 }
 
-export function reduceHP(character) {
-  return { type: REDUCE_HP, character}
+export function reducePlayerHP(player, HP) {
+  return { type: 'REDUCE_PLAYER_HP', player, HP: HP}
 }

@@ -1,12 +1,32 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import promise from 'redux-promise';
+import createLogger from 'redux-logger';
 
 import rpgApp from './reducers/rpgApp';
 import App from './components/App';
 
-let store = createStore(rpgApp)
+const logger = createLogger();
+const initialState ={
+  player:{
+    id: 1,
+    HP: 100,
+    maxHP: 100
+  },
+  enemy: {
+    id: 1,
+    HP: 120,
+    maxHP: 120
+  }
+}
+let store = createStore(rpgApp, initialState,
+applyMiddleware(thunk, promise, logger)
+);
+
+console.log(store.getState());
 
 render(
   <Provider store={store}>
