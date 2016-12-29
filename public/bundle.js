@@ -83,12 +83,22 @@
 	  player: {
 	    id: 1,
 	    HP: 100,
-	    maxHP: 100
+	    maxHP: 100,
+	    str: 10,
+	    crit: 10,
+	    critMod: 1.5,
+	    alive: true,
+	    spells: [
+	      // fireball: insertFireballHere,
+	      // pocketMushroom: insertHealHere
+	    ]
 	  },
 	  enemy: {
 	    id: 1,
 	    HP: 120,
-	    maxHP: 120
+	    maxHP: 120,
+	    str: 8,
+	    alive: true
 	  }
 	};
 	var store = (0, _redux.createStore)(_rpgApp2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxPromise2.default, logger));
@@ -25476,6 +25486,13 @@
 	            {
 	                HP: state.HP - action.HP;
 	            }
+
+	        case 'PLAYER_ATTACK':
+	            console.log('State :' + JSON.stringify(state));
+	            return _extends({}, state, {
+	                HP: state.HP - action.attack,
+	                alive: action.alive
+	            });
 	        default:
 	            return state;
 	    }
@@ -25648,7 +25665,7 @@
 	                _react2.default.createElement(
 	                    'button',
 	                    { onClick: function onClick() {
-	                            return _this2.props.reducePlayerHP(_this2.props.player, 10);
+	                            return _this2.props.playerAttack(_this2.props.player, _this2.props.enemy);
 	                        } },
 	                    'Attack!'
 	                )
@@ -25660,11 +25677,11 @@
 	}(_react.Component);
 
 	var mapStateToProps = function mapStateToProps(state) {
-	    return { player: state.player };
+	    return { player: state.player, enemy: state.enemy };
 	};
 
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	    return (0, _redux.bindActionCreators)({ addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP }, dispatch);
+	    return (0, _redux.bindActionCreators)({ addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP, playerAttack: RPG.playerAttack }, dispatch);
 	};
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Player);
@@ -25680,6 +25697,7 @@
 	});
 	exports.addPlayerHP = addPlayerHP;
 	exports.reducePlayerHP = reducePlayerHP;
+	exports.playerAttack = playerAttack;
 	// Action Creators
 
 	function addPlayerHP(player, HP) {
@@ -25688,6 +25706,29 @@
 
 	function reducePlayerHP(player, HP) {
 	  return { type: 'REDUCE_PLAYER_HP', player: player, HP: HP };
+	}
+
+	function playerAttack(player, enemy) {
+	  var playerObj = player;
+	  var enemyObj = enemy;
+
+	  // calculate the player's attack against the enemy
+	  if (Math.floor(Math.random() * 100) <= player.crit) {
+	    var crit = player.critMod;
+	  } else {
+	    var crit = 1;
+	  }
+
+	  var attack = playerObj.str * crit;
+
+	  // check if the attack will kill the enemy
+	  if (enemy.HP - attack <= 0) {
+	    var alive = false;
+	  } else {
+	    var alive = true;
+	  }
+
+	  return { type: 'PLAYER_ATTACK', attack: attack, alive: alive };
 	}
 
 /***/ },
@@ -25737,23 +25778,37 @@
 	    _createClass(Enemy, [{
 	        key: 'render',
 	        value: function render() {
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                _react2.default.createElement('img', { src: 'http://pre00.deviantart.net/c9ab/th/pre/i/2014/155/f/7/orc_cartoon_by_turnemsideways-d7l0ed0.jpg' }),
-	                _react2.default.createElement(
+
+	            if (this.props.enemy.alive) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement('img', { src: 'http://pre00.deviantart.net/c9ab/th/pre/i/2014/155/f/7/orc_cartoon_by_turnemsideways-d7l0ed0.jpg' }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        _react2.default.createElement(
+	                            'p',
+	                            null,
+	                            'HP: ',
+	                            this.props.enemy.HP,
+	                            '/',
+	                            this.props.enemy.maxHP
+	                        )
+	                    )
+	                );
+	            }
+	            if (!this.props.enemy.alive) {
+	                return _react2.default.createElement(
 	                    'div',
 	                    null,
 	                    _react2.default.createElement(
-	                        'p',
+	                        'h2',
 	                        null,
-	                        'HP: ',
-	                        this.props.enemy.HP,
-	                        '/',
-	                        this.props.enemy.maxHP
+	                        'Enemy Defeated!'
 	                    )
-	                )
-	            );
+	                );
+	            }
 	        }
 	    }]);
 
@@ -25761,9 +25816,7 @@
 	}(_react.Component);
 
 	var mapStateToProps = function mapStateToProps(state) {
-	    return {
-	        enemy: state.enemy
-	    };
+	    return { enemy: state.enemy };
 	};
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Enemy);

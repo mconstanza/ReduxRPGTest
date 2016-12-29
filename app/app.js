@@ -14,12 +14,22 @@ const initialState ={
   player:{
     id: 1,
     HP: 100,
-    maxHP: 100
+    maxHP: 100,
+    str: 10,
+    crit: 10,
+    critMod: 1.5,
+    alive: true,
+    spells: [
+      // fireball: insertFireballHere,
+      // pocketMushroom: insertHealHere
+    ]
   },
   enemy: {
     id: 1,
     HP: 120,
-    maxHP: 120
+    maxHP: 120,
+    str: 8,
+    alive: true
   }
 }
 let store = createStore(rpgApp, initialState,

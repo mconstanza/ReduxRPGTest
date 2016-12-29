@@ -44,6 +44,14 @@ const enemy = (state = {
             {
                 HP : state.HP - action.HP
             }
+
+        case 'PLAYER_ATTACK':
+        console.log('State :' + JSON.stringify(state));
+            return {
+              ...state,
+              HP: state.HP - action.attack,
+              alive: action.alive
+            }
         default:
             return state
     }

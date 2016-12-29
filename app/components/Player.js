@@ -17,18 +17,18 @@ class Player extends Component {
                 <div>
                     <p>HP: {this.props.player.HP}/{this.props.player.maxHP}</p>
                 </div>
-                <button onClick={() => this.props.reducePlayerHP(this.props.player, 10)}>Attack!</button>
+                <button onClick={() => this.props.playerAttack(this.props.player, this.props.enemy)}>Attack!</button>
             </div>
         )
     }
 }
 
 const mapStateToProps = function(state) {
-    return {player: state.player}
+    return {player: state.player, enemy: state.enemy}
 }
 
 const mapDispatchToProps = function(dispatch) {
-    return bindActionCreators({addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP}, dispatch)
+    return bindActionCreators({addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP, playerAttack: RPG.playerAttack}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Player);
