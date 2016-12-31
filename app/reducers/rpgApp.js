@@ -8,18 +8,7 @@ const player = (state = {
     }
 }, action) => {
     switch (action.type) {
-        case 'ADD_PLAYER_HP':
-            return {
-                ...state,
-                HP : state.HP + action.HP
-            }
-
-        case 'REDUCE_PLAYER_HP':
-            return {
-                ...state,
-                HP: state.HP - action.HP
-            }
-
+      
         default:
             return state
     }
@@ -33,18 +22,6 @@ const enemy = (state = {
     }
 }, action) => {
     switch (action.type) {
-        case 'ADD_ENEMY_HP':
-            return
-            {
-                HP : state.HP + action.HP
-            }
-
-        case 'REDUCE_ENEMY_HP':
-            return
-            {
-                HP : state.HP - action.HP
-            }
-
         case 'PLAYER_ATTACK':
         console.log('State :' + JSON.stringify(state));
             return {

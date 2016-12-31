@@ -13,6 +13,7 @@ const logger = createLogger();
 const initialState ={
   player:{
     id: 1,
+    name: 'Mario',
     HP: 100,
     maxHP: 100,
     str: 10,
@@ -24,13 +25,16 @@ const initialState ={
       // pocketMushroom: insertHealHere
     ]
   },
-  enemy: {
-    id: 1,
-    HP: 120,
-    maxHP: 120,
-    str: 8,
-    alive: true
-  }
+  enemies: [
+     {
+      name: 'Doosh',
+      id: 1,
+      HP: 120,
+      maxHP: 120,
+      str: 8,
+      alive: true
+    }
+  ]
 }
 let store = createStore(rpgApp, initialState,
 applyMiddleware(thunk, promise, logger)

@@ -82,6 +82,7 @@
 	var initialState = {
 	  player: {
 	    id: 1,
+	    name: 'Mario',
 	    HP: 100,
 	    maxHP: 100,
 	    str: 10,
@@ -93,13 +94,14 @@
 	      // pocketMushroom: insertHealHere
 	    ]
 	  },
-	  enemy: {
+	  enemies: [{
+	    name: 'Doosh',
 	    id: 1,
 	    HP: 120,
 	    maxHP: 120,
 	    str: 8,
 	    alive: true
-	  }
+	  }]
 	};
 	var store = (0, _redux.createStore)(_rpgApp2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxPromise2.default, logger));
 
@@ -25449,15 +25451,6 @@
 	    var action = arguments[1];
 
 	    switch (action.type) {
-	        case 'ADD_PLAYER_HP':
-	            return _extends({}, state, {
-	                HP: state.HP + action.HP
-	            });
-
-	        case 'REDUCE_PLAYER_HP':
-	            return _extends({}, state, {
-	                HP: state.HP - action.HP
-	            });
 
 	        default:
 	            return state;
@@ -25475,18 +25468,6 @@
 	    var action = arguments[1];
 
 	    switch (action.type) {
-	        case 'ADD_ENEMY_HP':
-	            return;
-	            {
-	                HP: state.HP + action.HP;
-	            }
-
-	        case 'REDUCE_ENEMY_HP':
-	            return;
-	            {
-	                HP: state.HP - action.HP;
-	            }
-
 	        case 'PLAYER_ATTACK':
 	            console.log('State :' + JSON.stringify(state));
 	            return _extends({}, state, {
@@ -25619,7 +25600,7 @@
 
 	var _rpgApp = __webpack_require__(233);
 
-	var RPG = _interopRequireWildcard(_rpgApp);
+	var actions = _interopRequireWildcard(_rpgApp);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -25665,7 +25646,7 @@
 	                _react2.default.createElement(
 	                    'button',
 	                    { onClick: function onClick() {
-	                            return _this2.props.playerAttack(_this2.props.player, _this2.props.enemy);
+	                            return _this2.props.fight(_this2.props.player, _this2.props.enemies);
 	                        } },
 	                    'Attack!'
 	                )
@@ -25677,58 +25658,67 @@
 	}(_react.Component);
 
 	var mapStateToProps = function mapStateToProps(state) {
-	    return { player: state.player, enemy: state.enemy };
+	    return { player: state.player, enemy: state.enemies };
 	};
 
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	    return (0, _redux.bindActionCreators)({ addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP, playerAttack: RPG.playerAttack }, dispatch);
+	    return (0, _redux.bindActionCreators)({ playerAttack: actions.playerAttack, fight: actions.Fight }, dispatch);
 	};
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Player);
 
 /***/ },
 /* 233 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
-	exports.addPlayerHP = addPlayerHP;
-	exports.reducePlayerHP = reducePlayerHP;
 	exports.playerAttack = playerAttack;
-	// Action Creators
+	exports.fight = fight;
 
-	function addPlayerHP(player, HP) {
-	  return { type: 'ADD_PLAYER_HP', player: player, HP: HP };
-	}
+	var _RPG = __webpack_require__(235);
 
-	function reducePlayerHP(player, HP) {
-	  return { type: 'REDUCE_PLAYER_HP', player: player, HP: HP };
-	}
+	var RPG = _interopRequireWildcard(_RPG);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function playerAttack(player, enemy) {
-	  var playerObj = player;
-	  var enemyObj = enemy;
+	    var playerObj = player;
+	    var enemyObj = enemy;
 
-	  // calculate the player's attack against the enemy
-	  if (Math.floor(Math.random() * 100) <= player.crit) {
-	    var crit = player.critMod;
-	  } else {
-	    var crit = 1;
-	  }
+	    // calculate the player's attack against the enemy
+	    if (Math.floor(Math.random() * 100) <= player.crit) {
+	        var crit = player.critMod;
+	    } else {
+	        var crit = 1;
+	    }
 
-	  var attack = playerObj.str * crit;
+	    var attack = playerObj.str * crit;
 
-	  // check if the attack will kill the enemy
-	  if (enemy.HP - attack <= 0) {
-	    var alive = false;
-	  } else {
-	    var alive = true;
-	  }
+	    // check if the attack will kill the enemy
+	    if (enemy.HP - attack <= 0) {
+	        var alive = false;
+	    } else {
+	        var alive = true;
+	    }
 
-	  return { type: 'PLAYER_ATTACK', attack: attack, alive: alive };
+	    return { type: 'PLAYER_ATTACK', attack: attack, alive: alive };
+	} // Action Creators
+
+	function fight(player, enemies) {
+	    player, enemies = RPG.playerAttack(player, enemies);
+	    for (var i = 0; i < enemies.length; i++) {
+	        if (player.hp > 0) {
+	            player, enemies[i] = RPG.enemyAttack(player, enemies[i]);
+	        } else {
+	            // logic for player death
+	        };
+	    }
+
+	    return { type: 'FIGHT', player: player, enemies: enemies };
 	}
 
 /***/ },
@@ -25779,7 +25769,7 @@
 	        key: 'render',
 	        value: function render() {
 
-	            if (this.props.enemy.alive) {
+	            if (this.props.enemies[0].alive) {
 	                return _react2.default.createElement(
 	                    'div',
 	                    null,
@@ -25791,14 +25781,14 @@
 	                            'p',
 	                            null,
 	                            'HP: ',
-	                            this.props.enemy.HP,
+	                            this.props.enemies[0].HP,
 	                            '/',
-	                            this.props.enemy.maxHP
+	                            this.props.enemies[0].maxHP
 	                        )
 	                    )
 	                );
 	            }
-	            if (!this.props.enemy.alive) {
+	            if (!this.props.enemies[0].alive) {
 	                return _react2.default.createElement(
 	                    'div',
 	                    null,
@@ -25816,10 +25806,68 @@
 	}(_react.Component);
 
 	var mapStateToProps = function mapStateToProps(state) {
-	    return { enemy: state.enemy };
+	    return { enemies: state.enemies };
 	};
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Enemy);
+
+/***/ },
+/* 235 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.playerTurn = playerTurn;
+	exports.enemyTurn = enemyTurn;
+	// RPG.js - API of rpg combat-based commands for use in actions
+	function playerTurn(player, enemy) {
+	  var playerObj = player;
+	  var enemyObj = enemy;
+
+	  // calculate the player's attack against the enemy
+	  if (Math.floor(Math.random() * 100) <= player.crit) {
+	    var crit = player.critMod;
+	  } else {
+	    var crit = 1;
+	  }
+
+	  var attack = playerObj.str * crit;
+
+	  // check if the attack will kill the enemy
+	  if (enemy.HP - attack <= 0) {
+	    var alive = false;
+	  } else {
+	    var alive = true;
+	  }
+
+	  return { type: 'PLAYER_ATTACK', attack: attack, alive: alive };
+	}
+
+	function enemyTurn(player, enemy) {
+	  var playerObj = player;
+	  var enemyObj = enemy;
+
+	  // calculate the player's attack against the enemy
+	  if (Math.floor(Math.random() * 100) <= player.crit) {
+	    var crit = player.critMod;
+	  } else {
+	    var crit = 1;
+	  }
+
+	  var attack = playerObj.str * crit;
+
+	  // check if the attack will kill the enemy
+	  if (enemy.HP - attack <= 0) {
+	    var alive = false;
+	  } else {
+	    var alive = true;
+	  }
+
+	  return { type: 'PLAYER_ATTACK', attack: attack, alive: alive };
+	}
 
 /***/ }
 /******/ ]);

@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as RPG from '../actions/rpgApp'
+import * as actions from '../actions/rpgApp'
 
 class Player extends Component {
     constructor(props) {
@@ -17,18 +17,18 @@ class Player extends Component {
                 <div>
                     <p>HP: {this.props.player.HP}/{this.props.player.maxHP}</p>
                 </div>
-                <button onClick={() => this.props.playerAttack(this.props.player, this.props.enemy)}>Attack!</button>
+                <button onClick={() => this.props.fight(this.props.player, this.props.enemies)}>Attack!</button>
             </div>
         )
     }
 }
 
 const mapStateToProps = function(state) {
-    return {player: state.player, enemy: state.enemy}
+    return {player: state.player, enemy: state.enemies}
 }
 
 const mapDispatchToProps = function(dispatch) {
-    return bindActionCreators({addPlayerHP: RPG.addPlayerHP, reducePlayerHP: RPG.reducePlayerHP, playerAttack: RPG.playerAttack}, dispatch)
+    return bindActionCreators({playerAttack: actions.playerAttack, fight: actions.Fight}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Player);

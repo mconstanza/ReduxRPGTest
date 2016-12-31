@@ -12,17 +12,17 @@ class Enemy extends Component {
 
     render() {
 
-        if (this.props.enemy.alive) {
+        if (this.props.enemies[0].alive) {
             return (
                 <div>
                     <img src="http://pre00.deviantart.net/c9ab/th/pre/i/2014/155/f/7/orc_cartoon_by_turnemsideways-d7l0ed0.jpg"></img>
                     <div>
-                        <p>HP: {this.props.enemy.HP}/{this.props.enemy.maxHP}</p>
+                        <p>HP: {this.props.enemies[0].HP}/{this.props.enemies[0].maxHP}</p>
                     </div>
                 </div>
             )
         }
-        if (!this.props.enemy.alive) {
+        if (!this.props.enemies[0].alive) {
             return (
 
                 <div>
@@ -35,7 +35,7 @@ class Enemy extends Component {
 }
 
 const mapStateToProps = function(state) {
-    return {enemy: state.enemy}
+    return {enemies: state.enemies}
 }
 
 export default connect(mapStateToProps)(Enemy);
